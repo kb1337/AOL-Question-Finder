@@ -113,10 +113,4 @@ class aol_db:
             self.cursor.execute(query, (text, location))
             self.connection.commit()
             print("{}\n{}\n{}".format(location, text, "*" * 25))
-
-    # DELETE
-    # -----------------------------------------------------------------
-    def kitap_sil(self, isim):
-        sorgu = "DELETE FROM kitaplar WHERE isim = ?"
-        self.cursor.execute(sorgu, (isim,))
-        self.connection.commit()
+            
