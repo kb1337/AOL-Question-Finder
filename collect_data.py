@@ -1,15 +1,25 @@
 from bs4 import BeautifulSoup
+from requests import get
 from aol_db import *
-import requests
-import wget
 import sys
 import os
+import re
+from urllib.request import Request, urlopen
+
+
+def downloadMedia(url, file_name):
+    print(f"\nDownloading {url} as {file_name}")
+    with open(file_name, "wb") as file:
+        response = get(url)
+        file.write(response.content)
+    print(f"Download Successfull. {file_name}")
 
 
 def get_exams(url):
     exams = dict()
-    response = requests.get(url)
-    html = response.content
+    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    response = urlopen(req).read()
+    html = response
     soup = BeautifulSoup(html, "html.parser")
     table = soup.find("table")
     table_body = table.find("tbody")
@@ -31,8 +41,9 @@ def get_exams(url):
 
 def get_exam_details(url):
     Q_A = dict()
-    response = requests.get(url)
-    html = response.content
+    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    response = urlopen(req).read()
+    html = response
     soup = BeautifulSoup(html, "html.parser")
     for question in soup.find_all("div", {"class", "card text-lg-center"}):
         answer = question.get("data-value")
@@ -44,13 +55,14 @@ def get_exam_details(url):
         else:
             img = img.get("src")
 
-        print(img)
-        wget.download(img)
+        name = re.search("https:\/\/aolsoru\.com\/500\/(.*)", img).group(1)
+        downloadMedia(img, name)
         print("\n", answer)
 
         q = img[24::]
         Q_A[q] = answer
     return Q_A
+
 
 url = ""
 lecture_name = ""
