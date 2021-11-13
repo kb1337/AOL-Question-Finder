@@ -4,7 +4,6 @@ from aol_db import *
 import sys
 import os
 import re
-from urllib.request import Request, urlopen
 
 
 def downloadMedia(url, file_name):
@@ -17,10 +16,8 @@ def downloadMedia(url, file_name):
 
 def get_exams(url):
     exams = dict()
-    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    response = urlopen(req).read()
-    html = response
-    soup = BeautifulSoup(html, "html.parser")
+    response = get(url, headers={"User-Agent": "Mozilla/5.0"}).content
+    soup = BeautifulSoup(response, "html.parser")
     table = soup.find("table")
     table_body = table.find("tbody")
     rows = table_body.find_all("tr")
@@ -41,10 +38,8 @@ def get_exams(url):
 
 def get_exam_details(url):
     Q_A = dict()
-    req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    response = urlopen(req).read()
-    html = response
-    soup = BeautifulSoup(html, "html.parser")
+    response = get(url, headers={"User-Agent": "Mozilla/5.0"}).content
+    soup = BeautifulSoup(response, "html.parser")
     for question in soup.find_all("div", {"class", "card text-lg-center"}):
         answer = question.get("data-value")
 
@@ -57,7 +52,7 @@ def get_exam_details(url):
 
         name = re.search("https:\/\/aolsoru\.com\/500\/(.*)", img).group(1)
         downloadMedia(img, name)
-        print("\n", answer)
+        print(answer)
 
         q = img[24::]
         Q_A[q] = answer
