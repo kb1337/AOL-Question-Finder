@@ -36,6 +36,10 @@ python image_to_string.py
 python flask_search_question.py
 ```
 
+## Tables
+
+<img src="https://user-images.githubusercontent.com/73403802/157924945-608e5a69-5f6f-4121-b265-d072995c6b5e.png" alt="exams" width="550"/>
+
 ## Workflow
 
 Crawl every exam in the lecture url.
