@@ -1,12 +1,15 @@
+"""Flask application for searching questions."""
+
+import os
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-import os
 
 
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'aol.db')
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "aol.db")
 db = SQLAlchemy(app)
+
 
 @app.route("/")
 def index():
@@ -17,18 +20,18 @@ def index():
 @app.route("/search", methods=["POST"])
 def search():
     text = request.form.get("text")
-    lectureID = request.form.get("lectureID")
-    search = "%{}%".format(text)
+    lecture_id = request.form.get("lectureID")
+    find = f"%{text}%"
 
-    questionsR = Questions.query.filter(Questions.text.like(search)).all()
-    questions = list()
+    filtered_questions = Questions.query.filter(Questions.text.like(find)).all()
+    questions = []
 
-    if lectureID:
-        for i in range(0, len(questionsR)):
-            if questionsR[i].ex.lecture_id == int(lectureID):
-                questions.append(questionsR[i])
+    if lecture_id:
+        for i, question in enumerate(filtered_questions):
+            if filtered_questions[i].ex.lecture_id == int(lecture_id):
+                questions.append(question)
     else:
-        questions = questionsR
+        questions = filtered_questions
 
     lectures = Lectures.query.all()
     return render_template("index.html", lectures=lectures, questions=questions)
