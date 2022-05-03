@@ -5,7 +5,7 @@ import os
 import re
 from requests import get
 from bs4 import BeautifulSoup
-from aol_db import aol_db
+from aol_db import AolDb
 
 
 def download_media(url: str, file_name: str) -> None:
@@ -84,7 +84,7 @@ def main() -> None:
 
     base_url = "https://aolsoru.com"
 
-    question_db = aol_db()
+    question_db = AolDb()
     lecture_id = question_db.add_lecture(lecture_name)
 
     directory = "./static"
