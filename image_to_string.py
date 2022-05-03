@@ -1,21 +1,25 @@
-from aol_db import *
+"""Converts image to text"""
+
 import os
 import pytesseract
+from PIL import Image
+from aol_db import AolDb
 
-try:
-    from PIL import Image
-except ImportError:
-    import Image
 
-folder = "./static/"
+def main() -> None:
+    """Main function"""
+    folder = "./static/"
+    aol_db = AolDb()
+    aol_db.create_connection()
 
-db = aol_db()
-db.create_connection()
+    for *_, files in os.walk(folder):
+        for img in files:
+            if not aol_db.is_converted_to_text(img):
+                text = pytesseract.image_to_string(Image.open(folder + img), lang="tur")
+                aol_db.update_question(img, text)
 
-for path, folders, files in os.walk(folder):
-    for img in files:
-        if not db.isConvertedToText(img):
-            text = pytesseract.image_to_string(Image.open(folder + img), lang="tur")
-            db.update_question(img, text)
+    aol_db.close_connection()
 
-db.close_connection()
+
+if __name__ == "__main__":
+    main()
