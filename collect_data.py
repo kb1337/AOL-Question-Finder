@@ -1,10 +1,12 @@
 """Collects questions and answers from aolsoru.com"""
 
-import sys
 import os
 import re
-from requests import get
+import sys
+
 from bs4 import BeautifulSoup
+from requests import get
+
 from aol_db import AolDb
 
 
@@ -15,7 +17,7 @@ def download_media(url: str, file_name: str) -> None:
     with open(file_name, "wb") as file:
         response = get(url)
         file.write(response.content)
-    print(f"Download Successfull. {file_name}")
+    print(f"Download Successful. {file_name}")
 
 
 def get_exams(url: str) -> dict:
@@ -74,7 +76,7 @@ def main() -> None:
 
     if len(sys.argv) != 3:
         sys.stderr.write(
-            f"Missing Parameters\n\nUsage:\npython {sys.argv[0]} lacture_name url\n"
+            f"Missing Parameters\n\nUsage:\npython {sys.argv[0]} lecture_name url\n"
         )
         sys.stderr.flush()
         sys.exit()
@@ -96,7 +98,7 @@ def main() -> None:
         print(f"\n{name}\n{base_url + path}\n")
         exam_id = question_db.add_exam(lecture_id, name, base_url + path)
 
-        # Inserts questions to database at end of the exam. (every 20 questions in this case.)
+        # Insert questions to database at end of the exam. (every 20 questions in this case.)
         for question, answer in get_exam_details(base_url + path).items():
             question_db.add_question(exam_id, question, "", answer)
         print("\n\n", "*" * 50)
